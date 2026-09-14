@@ -1,5 +1,6 @@
 import { Component, useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
+import { Analytics } from '@vercel/analytics/react'
 import confetti from 'canvas-confetti'
 import Playground from './components/Playground.jsx'
 import Terminal, { useKonami } from './components/Terminal.jsx'
@@ -601,6 +602,7 @@ export default function App() {
     <SettingsProvider>
       <ErrorBoundary>
         <Site />
+        <Analytics />
       </ErrorBoundary>
     </SettingsProvider>
   )
