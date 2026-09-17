@@ -170,7 +170,7 @@ export default function GravityPit({ items, notify }) {
 
   return (
     <div>
-      <p style={{ color: 'var(--paper-dim, rgba(245,241,233,.64))', fontSize: 14, lineHeight: 1.7, maxWidth: 560 }}>
+      <p style={{ color: 'var(--dim)', fontSize: 14, lineHeight: 1.7, maxWidth: 560 }}>
         The stack, obeying physics. Drag the icons, shake the box, or flip gravity entirely.
         Just like prod, but prettier.
       </p>

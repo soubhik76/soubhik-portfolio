@@ -152,7 +152,8 @@ export const HOW = [
   },
 ]
 
-export const QUOTES = [  {
+export const QUOTES = [
+  {
     big: 'Adoption is not logins. It is the day someone quotes your number in a meeting without hedging first.',
     small: 'The KPI that never appears on a job description',
   },

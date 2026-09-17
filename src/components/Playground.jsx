@@ -19,8 +19,9 @@ function Panic({ onScore }) {
   const [msg, setMsg] = useState('Fix red pipelines before Finance notices. 30 seconds. Go.')
   const timer = useRef(null)
   const spawner = useRef(null)
+  const scoreRef = useRef(0)
 
-  const stop = (finalScore = score) => {
+  const stop = (finalScore) => {
     setRunning(false)
     clearInterval(timer.current)
     clearInterval(spawner.current)
@@ -37,11 +38,12 @@ function Panic({ onScore }) {
   }
 
   const start = () => {
+    scoreRef.current = 0
     setScore(0); setTime(30); setRunning(true)
     setMsg('PIPELINES ARE FAILING. CLICK THE RED ONES.')
     timer.current = setInterval(() => {
       setTime((t) => {
-        if (t <= 1) { stop(); return 0 }
+        if (t <= 1) { stop(scoreRef.current); return 0 }
         return t - 1
       })
     }, 1000)
@@ -60,6 +62,7 @@ function Panic({ onScore }) {
   const whack = (i) => {
     if (!running || !cells[i]) return
     const s = score + 1
+    scoreRef.current = s
     setScore(s)
     setCells((c) => c.map((v, j) => (j === i ? false : v)))
     if (s % 10 === 0) pop({ particleCount: 40, spread: 60 })
@@ -76,7 +79,7 @@ function Panic({ onScore }) {
         </div>
         {!running
           ? <button className="btn btn-p" style={{ padding: '6px 6px 6px 24px' }} onClick={start}>Start shift <span className="arr">▶</span></button>
-          : <button className="mini-btn" onClick={() => stop()}>End shift</button>}
+          : <button className="mini-btn" onClick={() => stop(scoreRef.current)}>End shift</button>}
       </div>
       <div className="pgrid">
         {cells.map((bad, i) => (
@@ -118,9 +121,9 @@ function Deploy() {
 
   return (
     <div>
-      <p style={{ color: 'var(--paper-dim)', fontSize: 14, lineHeight: 1.7, maxWidth: 560 }}>
+      <p style={{ color: 'var(--dim)', fontSize: 14, lineHeight: 1.7, maxWidth: 560 }}>
         The big red button. Success rate calibrated to real enterprise life (~17%).
-        Deploys: <b style={{ color: 'var(--paper)' }}>{deploys}</b> · Miracles: <b style={{ color: '#4ade80' }}>{wins}</b>
+        Deploys: <b style={{ color: 'var(--ink)' }}>{deploys}</b> · Miracles: <b style={{ color: '#4ade80' }}>{wins}</b>
       </p>
       <div style={{ marginTop: 22 }}>
         <button className="big-red" disabled={busy} onClick={fire}>{busy ? 'DEPLOYING…' : 'PUSH TO PROD'}<span className="arr">🚀</span></button>
@@ -167,7 +170,7 @@ function Quiz({ notify }) {
       <div style={{ textAlign: 'center', padding: '20px 0' }}>
         <div style={{ fontSize: 56 }}>🏆</div>
         <div className="quiz-q">{finalScore}/5 correct</div>
-        <p style={{ color: 'var(--paper-dim)', fontSize: 14 }}>
+        <p style={{ color: 'var(--dim)', fontSize: 14 }}>
           {finalScore === 5 ? 'Flawless. You either do this for a living or you ARE Soubhik Chakraborty.' : finalScore >= 3 ? 'Employable. Finance would only double-check you twice.' : 'The vendor sends its regards. Retake encouraged.'}
         </p>
         <button className="mini-btn" onClick={reset}>Retake quiz</button>

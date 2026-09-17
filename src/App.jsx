@@ -206,6 +206,14 @@ function ResumeModal({ open, onClose, file, name }) {
   )
 }
 
+/* ---------- thin reading progress hairline ---------- */
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll()
+  const [p, setP] = useState(0)
+  useMotionValueEvent(scrollYProgress, 'change', (v) => setP(v))
+  return <div className="scroll-progress" aria-hidden="true"><i style={{ transform: `scaleX(${p})` }} /></div>
+}
+
 /* ================= APP ================= */
 function Site() {
   const { s } = useSettings()
@@ -306,6 +314,7 @@ function Site() {
       <div className="orbs" aria-hidden="true"><i className="orb-a" /><i className="orb-b" /><i className="orb-c" /></div>
       <div className="grain" aria-hidden="true" />
       <div className="cursor-orb" ref={orb} aria-hidden="true" />
+      <ScrollProgress />
 
       <nav className="nav">
         <button className="mark" onClick={() => { confetti({ particleCount: 60, spread: 70 }); notify('You clicked the name. The name appreciates it.') }}>
@@ -333,7 +342,7 @@ function Site() {
         ))}
         <a className="mlink" href={resumeUrl} download onClick={() => setMenu(false)}>
           <span style={{ transitionDelay: menu ? `${120 + MENU_LINKS.length * 70}ms` : '0ms' }}>
-            <span style={{ fontSize: '.35em', color: 'var(--cop-lite)', marginRight: 18 }}>06</span>Resume ↓
+            <span style={{ fontSize: '.35em', color: 'var(--cop-lite)', marginRight: 18 }}>{String(MENU_LINKS.length + 1).padStart(2, '0')}</span>Resume ↓
           </span>
         </a>
         <div className="mfoot">{s.name.toLowerCase().replace(/ /g, '')}@fabric - all pipelines green · tap a link to close</div>
