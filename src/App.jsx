@@ -5,6 +5,9 @@ import confetti from 'canvas-confetti'
 import Playground from './components/Playground.jsx'
 import { FeaturedBuild } from './components/Mockup.jsx'
 import Terminal, { useKonami } from './components/Terminal.jsx'
+import { BackgroundBeams } from './components/aceternity/background-beams.jsx'
+import { CardBody, CardContainer, CardItem } from './components/aceternity/3d-card.jsx'
+import { GlowingEffect } from './components/aceternity/glowing-effect.jsx'
 import { SettingsProvider, useSettings } from './admin/settings.jsx'
 import AdminPanel from './admin/AdminPanel.jsx'
 import { CATS, HOW, JOBS, PROJECTS, QUOTES, REDIRECTS, STACK } from './data.js'
@@ -417,6 +420,9 @@ function Site() {
       <main>
         {/* HERO - fits one viewport */}
         <div className="hero uv-bg-dots">
+          <div aria-hidden="true">
+            <BackgroundBeams className="hero-beams pointer-events-none" />
+          </div>
           <div className="wrap hero-grid">
             <div>
               <motion.div initial={{ y: 32, opacity: 0, filter: 'blur(10px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 0.9, ease: EASE }}>
@@ -443,15 +449,21 @@ function Site() {
               </motion.div>
             </div>
 
-            <motion.button className="mini-term" onClick={() => setTermOpen(true)}
-              initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.3, ease: EASE }} aria-label="Open terminal">
-              <span className="mt-in" style={{ display: 'block' }}>
-                <span className="mt-bar"><span className="dot" style={{ background: '#e04848' }} /><span className="dot" style={{ background: '#e0a848' }} /><span className="dot" style={{ background: '#4ade80' }} /></span>
-                <pre>{'$ whoami\n'}<span className="w">data engineer. excel-export eradicator.</span>{'\n$ ./rebuild-trust.sh\n'}<span className="g">✓ 21/21 feeds green · finance nodded once</span></pre>
-                <span className="mt-open"><span>live from the warehouse</span><span>open terminal →</span></span>
-              </span>
-            </motion.button>
+            <CardContainer containerClassName="hero-3d" className="hero-3d-tilt">
+              <CardBody className="hero-3d-body">
+                <CardItem translateZ={48} className="w-full">
+                  <motion.button className="mini-term" onClick={() => setTermOpen(true)}
+                    initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.3, ease: EASE }} aria-label="Open terminal">
+                    <span className="mt-in" style={{ display: 'block' }}>
+                      <span className="mt-bar"><span className="dot" style={{ background: '#e04848' }} /><span className="dot" style={{ background: '#e0a848' }} /><span className="dot" style={{ background: '#4ade80' }} /></span>
+                      <pre>{'$ whoami\n'}<span className="w">data engineer. excel-export eradicator.</span>{'\n$ ./rebuild-trust.sh\n'}<span className="g">✓ 21/21 feeds green · finance nodded once</span></pre>
+                      <span className="mt-open"><span>live from the warehouse</span><span>open terminal →</span></span>
+                    </span>
+                  </motion.button>
+                </CardItem>
+              </CardBody>
+            </CardContainer>
           </div>
           <div className="wrap">
             <div className="hero-strip">
@@ -516,7 +528,9 @@ function Site() {
             {s.sections.trust && (
             <div className="trust">
               <Reveal>
-                <div className="shell"><div className="core">
+                <div className="shell acet-glow-host">
+                  <GlowingEffect disabled={false} glow={false} proximity={80} spread={40} movementDuration={1.5} borderWidth={2} />
+                  <div className="core">
                   <h3>Excel-export incidents</h3>
                   <p>Every “just double-check” export gets one click below.</p>
                   <div className="excel-count">{excel}</div>
@@ -527,7 +541,9 @@ function Site() {
                 </div></div>
               </Reveal>
               <Reveal delay={0.08}>
-                <div className="shell"><div className="core">
+                <div className="shell acet-glow-host">
+                  <GlowingEffect disabled={false} glow={false} proximity={80} spread={40} movementDuration={1.5} borderWidth={2} />
+                  <div className="core">
                   <h3>Time-to-trust</h3>
                   <p>How long before someone quotes your number without hedging.</p>
                   <div className="meter"><div style={{ transform: `scaleX(${trust / 100})` }} /></div>

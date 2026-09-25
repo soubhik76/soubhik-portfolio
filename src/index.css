@@ -441,3 +441,15 @@ body.party{animation:partybg 2.5s linear infinite}
 .slice .dd{font-size:13px;line-height:1.6;color:rgba(255,255,255,.82);margin-top:10px;max-height:0;opacity:0;overflow:hidden;transition:max-height .7s var(--ease),opacity .5s}
 .slice:hover .dd,.slice.active .dd{max-height:200px;opacity:1}
 @media(max-width:880px){.acc{flex-direction:column;height:auto}.slice{min-height:170px;flex:none}.slice .dd{max-height:none;opacity:1}}
+
+/* Aceternity placements. Layout stays; these only seat the new effects. */
+.hero-beams{opacity:.5;pointer-events:none}
+.hero>.wrap{position:relative;z-index:1}
+.hero-3d{width:100%;padding:0 !important;display:flex !important;justify-content:flex-end;align-items:center}
+.hero-3d-tilt{width:min(100%,460px)}
+.hero-3d-body{height:auto !important;width:100% !important}
+.acet-glow-host{position:relative}
+@media(max-width:1020px){.hero-3d{display:none !important}}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero-beams{opacity:.82}}
+:root[data-theme="dark"] .hero-beams{opacity:.82}
+:root[data-theme="light"] .hero-beams{opacity:.42}
