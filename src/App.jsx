@@ -6,7 +6,7 @@ import Playground from './components/Playground.jsx'
 import Terminal, { useKonami } from './components/Terminal.jsx'
 import { SettingsProvider, useSettings } from './admin/settings.jsx'
 import AdminPanel from './admin/AdminPanel.jsx'
-import { CATS, HOW, JOBS, PROJECTS, QUOTES, STACK } from './data.js'
+import { CATS, HOW, JOBS, PROJECTS, QUOTES, REDIRECTS, STACK } from './data.js'
 
 const EASE = [0.32, 0.72, 0, 1]
 const asset = (p) => `${import.meta.env.BASE_URL}${p}`
@@ -138,15 +138,15 @@ function Manifesto() {
   )
 }
 
-/* ---------- filterable showcase ---------- */
+/* ---------- filterable showcase (rows redirect to LinkedIn / project pages) ---------- */
 function Showcase() {
   const [cat, setCat] = useState('all')
   const items = PROJECTS.filter((p) => cat === 'all' || p.cat === cat)
   return (
     <>
-      <div className="tabs">
+      <div className="tabs" role="tablist" aria-label="Filter work by type">
         {CATS.map(([k, label], i) => (
-          <button key={k} className={`tab ${cat === k ? 'on' : ''}`} onClick={() => setCat(k)}>
+          <button key={k} role="tab" aria-selected={cat === k} className={`tab ${cat === k ? 'on' : ''}`} onClick={() => setCat(k)}>
             <span className="n">0{i + 1}</span>{label}
           </button>
         ))}
@@ -154,7 +154,10 @@ function Showcase() {
       <motion.div className="proj-list" layout transition={{ duration: 0.6, ease: EASE }}>
         <AnimatePresence initial={false}>
           {items.map((p, i) => (
-            <motion.div key={p.title} layout
+            <motion.a key={p.title} layout
+              href={p.link || 'https://www.linkedin.com/in/soubhikchakraborty76'}
+              target="_blank" rel="noopener noreferrer"
+              aria-label={`${p.title} — opens project page on LinkedIn or GitHub`}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -165,12 +168,33 @@ function Showcase() {
               <span className="stk">{p.stack}</span>
               <span className="met">{p.metric}</span>
               <GoArrow />
-            </motion.div>
+            </motion.a>
           ))}
         </AnimatePresence>
       </motion.div>
+      <p style={{ marginTop: 16, fontSize: 13, color: 'var(--faint)' }}>
+        Every project links out — full write-ups live on{' '}
+        <a href="https://www.linkedin.com/in/soubhikchakraborty76" target="_blank" rel="me noopener noreferrer" style={{ color: 'var(--em)' }}>LinkedIn</a>{' '}
+        and code on <a href="https://github.com/soubhik76" target="_blank" rel="me noopener noreferrer" style={{ color: 'var(--em)' }}>GitHub</a>.
+      </p>
     </>
   )
+}
+
+/* ---------- instant redirects: /linkedin, /github, /email, /resume ---------- */
+function ExternalRedirects() {
+  useEffect(() => {
+    const path = window.location.pathname.replace(/\/$/, '') || '/'
+    const target = REDIRECTS[path]
+    if (target) {
+      window.location.replace(target)
+      return
+    }
+    // Hash shortcuts: #linkedin, #github
+    if (window.location.hash === '#linkedin') window.location.replace(REDIRECTS['/linkedin'])
+    if (window.location.hash === '#github') window.location.replace(REDIRECTS['/github'])
+  }, [])
+  return null
 }
 
 const MENU_LINKS = [
@@ -311,6 +335,8 @@ function Site() {
 
   return (
     <>
+      <ExternalRedirects />
+      <a href="#work" style={{ position: 'absolute', left: -9999, top: 0 }} onFocus={(e) => { e.target.style.left = '12px'; e.target.style.top = '12px'; e.target.style.zIndex = 99; }} onBlur={(e) => { e.target.style.left = '-9999px'; }}>Skip to work</a>
       <div className="orbs" aria-hidden="true"><i className="orb-a" /><i className="orb-b" /><i className="orb-c" /></div>
       <div className="grain" aria-hidden="true" />
       <div className="cursor-orb" ref={orb} aria-hidden="true" />
@@ -569,9 +595,11 @@ function Site() {
             )}
             <Reveal delay={0.05}>
               <h2 className="disp" style={{ marginTop: 56 }}>The <span className="serif-it">number</span> that's not moving?</h2>
+              <p style={{ marginTop: 16, color: 'var(--dim)', fontSize: 16 }}>Fastest reply on LinkedIn — every click below opens my profile, inbox, or code.</p>
               <div className="btns">
                 <a href={`mailto:${s.email}`} className="btn btn-p">{s.email} <Arrow /></a>
-                <a href={s.linkedin} target="_blank" rel="noreferrer" className="btn btn-g">LinkedIn <Arrow /></a>
+                <a href={s.linkedin} target="_blank" rel="me noopener noreferrer" aria-label="Open Soubhik Chakraborty on LinkedIn" className="btn btn-g">LinkedIn <Arrow /></a>
+                <a href={s.github || 'https://github.com/soubhik76'} target="_blank" rel="me noopener noreferrer" aria-label="Open Soubhik Chakraborty on GitHub" className="btn btn-g">GitHub <Arrow /></a>
                 <a href={resumeUrl} download className="btn btn-g">Resume <span className="arr">↓</span></a>
               </div>
               <div style={{ marginTop: 18 }}>
@@ -589,7 +617,9 @@ function Site() {
             <button className="fm" onClick={footTap} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }} aria-label={s.name}><Dotted name={s.name} /></button>
             <div className="fl">
               <a href={`mailto:${s.email}`}>Email</a>
-              <a href={s.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+              <a href={s.linkedin} target="_blank" rel="me noopener noreferrer">LinkedIn</a>
+              <a href={s.github || 'https://github.com/soubhik76'} target="_blank" rel="me noopener noreferrer">GitHub</a>
+              <a href="/linkedin">/linkedin ↗</a>
               <a href={resumeUrl} download>Resume</a>
               <a href={`tel:${s.phone.replace(/\s/g, '')}`}>{s.phone}</a>
             </div>

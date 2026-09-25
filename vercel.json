@@ -1,4 +1,18 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "redirects": [
+    { "source": "/linkedin", "destination": "https://www.linkedin.com/in/soubhikchakraborty76", "permanent": false },
+    { "source": "/github", "destination": "https://github.com/soubhik76", "permanent": false },
+    { "source": "/resume", "destination": "/Soubhik-Chakraborty-Resume.pdf", "permanent": false }
+  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
 }

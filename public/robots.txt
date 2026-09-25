@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://soubhik76.github.io/soubhik-portfolio/sitemap.xml

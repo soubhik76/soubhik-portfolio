@@ -4,6 +4,7 @@ import { LINKS } from '../data.js'
 const KEY = 'sc-portfolio-settings-v1'
 
 export const ACCENTS = {
+  apple: { label: 'Apple Blue', em: '#0071e3', deep: '#0066cc' },
   emerald: { label: 'Emerald', em: '#57b894', deep: '#1E6B54' },
   copper: { label: 'Copper', em: '#D29A73', deep: '#8A5A33' },
   violet: { label: 'Violet', em: '#A78BFA', deep: '#5B4BC4' },
@@ -28,10 +29,12 @@ export const DEFAULTS = {
   pipelineNote: '21/21 pipelines green',
   email: LINKS.email,
   linkedin: LINKS.linkedin,
+  github: LINKS.github,
+  website: LINKS.website,
   phone: LINKS.phone,
   resumeFile: 'Soubhik-Chakraborty-Resume.pdf',
   trustStart: 72,
-  accent: 'emerald',
+  accent: 'apple',
   sections: { stack: true, work: true, play: true, trust: true, how: true, where: true, quotes: true },
 }
 
@@ -56,7 +59,7 @@ export function SettingsProvider({ children }) {
   const [s, setS] = useState(load)
 
   useEffect(() => {
-    const a = ACCENTS[s.accent] || ACCENTS.emerald
+    const a = ACCENTS[s.accent] || ACCENTS.apple
     const root = document.documentElement.style
     root.setProperty('--em', a.em)
     root.setProperty('--em-deep', a.deep)

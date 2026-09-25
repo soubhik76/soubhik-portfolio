@@ -71,6 +71,8 @@ export default function AdminPanel({ open, onClose, notify }) {
             <h5>Links</h5>
             <Field label="Email" value={s.email} onChange={(v) => set('email', v)} />
             <Field label="LinkedIn URL" value={s.linkedin} onChange={(v) => set('linkedin', v)} />
+            <Field label="GitHub URL" value={s.github || ''} onChange={(v) => set('github', v)} />
+            <Field label="Website URL (canonical for SEO)" value={s.website || ''} onChange={(v) => set('website', v)} />
             <Field label="Phone" value={s.phone} onChange={(v) => set('phone', v)} />
             <Field label="Resume file (in public/)" value={s.resumeFile} onChange={(v) => set('resumeFile', v)} />
           </div>

@@ -1,7 +1,23 @@
+export const SITE = {
+  name: 'Soubhik Chakraborty',
+  url: 'https://soubhik76.github.io/soubhik-portfolio/',
+  ogImage: 'https://soubhik76.github.io/soubhik-portfolio/og-cover.jpg',
+  locale: 'en_IN',
+}
+
 export const LINKS = {
   email: 'soubhikchakraborty76@gmail.com',
-  linkedin: 'https://linkedin.com/in/soubhikchakraborty76',
+  linkedin: 'https://www.linkedin.com/in/soubhikchakraborty76',
+  github: 'https://github.com/soubhik76',
+  website: 'https://soubhik76.github.io/soubhik-portfolio/',
   phone: '+91 8274022133',
+}
+
+/* Short redirect paths (also wired in vercel.json + SPA fallback in App.jsx) */
+export const REDIRECTS = {
+  '/linkedin': 'https://www.linkedin.com/in/soubhikchakraborty76',
+  '/github': 'https://github.com/soubhik76',
+  '/email': 'mailto:soubhikchakraborty76@gmail.com',
 }
 
 export const LOG_LINES = [
@@ -179,45 +195,54 @@ export const PROJECTS = [
     cat: 'apps', title: 'Order Journey Tracker',
     use: 'Every D2C order, checkout to doorstep, in one live timeline.',
     stack: 'Redshift · Shopify · Clickpost', metric: '4 systems → 1 view',
+    link: 'https://www.linkedin.com/in/soubhikchakraborty76',
   },
   {
     cat: 'apps', title: 'Chargeback Tracker',
     use: 'Vendor claims filed, evidenced and charged back - with a paper trail.',
     stack: 'Django · Fabric · T-SQL', metric: '5 vendors, held to terms',
+    link: 'https://www.linkedin.com/in/soubhikchakraborty76',
   },
   {
     cat: 'apps', title: 'Feed Load Monitor',
     use: 'Live health for 21 distributor interfaces. Failures fail loudly.',
     stack: 'Fabric · Power BI', metric: '21 feeds watched',
+    link: 'https://www.linkedin.com/in/soubhikchakraborty76',
   },
   {
     cat: 'auto', title: 'NACH H2H Runner',
     use: 'Bank files fetched, AES-decrypted, transformed and FTP’d - before anyone wakes.',
     stack: 'Python · Graph API · AES', metric: '0 mornings ruined',
+    link: 'https://github.com/soubhik76',
   },
   {
     cat: 'auto', title: 'Ageing Reconciler',
     use: 'Proves the BI ageing model against SAP FIFO logic, line by line.',
     stack: 'Python · SAP FBL5N', metric: 'matched to the rupee',
+    link: 'https://github.com/soubhik76',
   },
   {
     cat: 'auto', title: 'Feed Loader',
     use: 'Row-cap trips, schema-drift alarms, reorder-proof incremental loads.',
     stack: 'Python · T-SQL', metric: '1M-row cap tamed',
+    link: 'https://github.com/soubhik76',
   },
   {
     cat: 'fmcg', title: 'Secondary-Sales Truth',
     use: 'Distributor sales reconciled to one number leadership stops debating.',
     stack: 'Fabric · SAP HANA', metric: '21 feeds → 1 number',
+    link: 'https://www.linkedin.com/in/soubhikchakraborty76',
   },
   {
     cat: 'fmcg', title: 'Marketplace Fee Recovery',
     use: 'Fee mismatches against marketplaces, found and recovered as margin.',
     stack: 'Redshift · Netsuite', metric: 'margin recovered',
+    link: 'https://www.linkedin.com/in/soubhikchakraborty76',
   },
   {
     cat: 'fmcg', title: 'Warehouse Accuracy Rebuild',
     use: 'Slotting and dispatch reporting rebuilt end to end.',
     stack: 'Power BI · T-SQL', metric: '-90% errors · -40% time',
+    link: 'https://www.linkedin.com/in/soubhikchakraborty76',
   },
 ]
