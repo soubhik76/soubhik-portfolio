@@ -34,7 +34,8 @@ export const DEFAULTS = {
   phone: LINKS.phone,
   resumeFile: 'Soubhik-Chakraborty-Resume.pdf',
   trustStart: 72,
-  accent: 'apple',
+  accent: 'emerald',
+  theme: 'system',
   sections: { stack: true, work: true, play: true, trust: true, how: true, where: true, quotes: true },
 }
 
@@ -59,10 +60,14 @@ export function SettingsProvider({ children }) {
   const [s, setS] = useState(load)
 
   useEffect(() => {
-    const a = ACCENTS[s.accent] || ACCENTS.apple
-    const root = document.documentElement.style
+    const a = ACCENTS[s.accent] || ACCENTS.emerald
+    const el = document.documentElement
+    const root = el.style
     root.setProperty('--em', a.em)
     root.setProperty('--em-deep', a.deep)
+    // Manual theme override wins over prefers-color-scheme (see index.css).
+    if (s.theme === 'light' || s.theme === 'dark') el.dataset.theme = s.theme
+    else delete el.dataset.theme
     try {
       localStorage.setItem(KEY, JSON.stringify(s))
     } catch {

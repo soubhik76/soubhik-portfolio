@@ -238,6 +238,29 @@ function ScrollProgress() {
   return <div className="scroll-progress" aria-hidden="true"><i style={{ transform: `scaleX(${p})` }} /></div>
 }
 
+/* ---------- theme toggle: light / dark / system ---------- */
+function ThemeToggle() {
+  const { s, set } = useSettings()
+  const [systemDark, setSystemDark] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches
+  )
+  useEffect(() => {
+    const mq = window.matchMedia?.('(prefers-color-scheme: dark)')
+    if (!mq) return
+    const h = (e) => setSystemDark(e.matches)
+    mq.addEventListener?.('change', h)
+    return () => mq.removeEventListener?.('change', h)
+  }, [])
+  const effective = s.theme === 'system' ? (systemDark ? 'dark' : 'light') : s.theme
+  const cycle = () => set('theme', effective === 'dark' ? 'light' : s.theme === 'system' ? 'dark' : 'system')
+  const label = `Theme: ${s.theme}. Switch to ${effective === 'dark' ? 'light' : s.theme === 'system' ? 'dark' : 'system'}.`
+  return (
+    <button className="theme-toggle" onClick={cycle} aria-label={label} title={label}>
+      <span aria-hidden="true">{effective === 'dark' ? '☀' : '◐'}</span>
+    </button>
+  )
+}
+
 /* ================= APP ================= */
 function Site() {
   const { s } = useSettings()
@@ -353,6 +376,7 @@ function Site() {
           <a href="#where">Track record</a>
         </div>
         <a href="#contact" className="btn btn-p"><span className="txt">Get in touch</span><Arrow /></a>
+        <ThemeToggle />
         <button className={`burger ${menu ? 'open' : ''}`} aria-label="Menu" onClick={() => setMenu((m) => !m)}>
           <i /><i />
         </button>

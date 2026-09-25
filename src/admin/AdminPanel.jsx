@@ -94,6 +94,24 @@ export default function AdminPanel({ open, onClose, notify }) {
           </div>
 
           <div className="ad-group">
+            <h5>Appearance</h5>
+            <div className="ad-row" role="group" aria-label="Color theme">
+              {['system', 'light', 'dark'].map((t) => (
+                <button
+                  key={t}
+                  className={`mini-btn${s.theme === t || (!s.theme && t === 'system') ? ' on' : ''}`}
+                  onClick={() => set('theme', t)}
+                  aria-pressed={s.theme === t}
+                  style={s.theme === t ? { background: 'var(--ink)', color: 'var(--void)', borderColor: 'var(--ink)' } : undefined}
+                >
+                  {t[0].toUpperCase() + t.slice(1)}
+                </button>
+              ))}
+            </div>
+            <p className="ad-note">System follows the visitor's OS. The ☀/◐ button in the nav does the same.</p>
+          </div>
+
+          <div className="ad-group">
             <h5>Accent theme</h5>
             <div className="ad-swatches">
               {Object.entries(ACCENTS).map(([k, a]) => (
