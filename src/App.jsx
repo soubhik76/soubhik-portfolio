@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-
 import { Analytics } from '@vercel/analytics/react'
 import confetti from 'canvas-confetti'
 import Playground from './components/Playground.jsx'
+import { FeaturedBuild } from './components/Mockup.jsx'
 import Terminal, { useKonami } from './components/Terminal.jsx'
 import { SettingsProvider, useSettings } from './admin/settings.jsx'
 import AdminPanel from './admin/AdminPanel.jsx'
@@ -204,8 +205,10 @@ const MENU_LINKS = [
 
 /* ---------- resume preview modal ---------- */
 function ResumeModal({ open, onClose, file, name }) {
+  const [loaded, setLoaded] = useState(false)
   useEffect(() => {
     if (!open) return
+    setLoaded(false)
     const h = (e) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', h)
     return () => window.removeEventListener('keydown', h)
@@ -224,7 +227,10 @@ function ResumeModal({ open, onClose, file, name }) {
             <button className="ad-x" style={{ width: 30, height: 30, fontSize: 12 }} onClick={onClose} aria-label="Close resume">✕</button>
           </span>
         </div>
-        <iframe src={file} title={`${name} resume preview`} />
+        <div style={{ position: 'relative', flex: 1, display: 'flex' }}>
+          {!loaded && <div className="uv-loader-wrap"><span className="uv-loader" role="status" aria-label="Loading resume" /></div>}
+          <iframe src={file} title={`${name} resume preview`} onLoad={() => setLoaded(true)} style={{ flex: 1 }} />
+        </div>
       </div>
     </div>
   )
@@ -238,7 +244,7 @@ function ScrollProgress() {
   return <div className="scroll-progress" aria-hidden="true"><i style={{ transform: `scaleX(${p})` }} /></div>
 }
 
-/* ---------- theme toggle: light / dark / system ---------- */
+/* ---------- theme switch (uiverse-style toggle) ---------- */
 function ThemeToggle() {
   const { s, set } = useSettings()
   const [systemDark, setSystemDark] = useState(
@@ -252,12 +258,22 @@ function ThemeToggle() {
     return () => mq.removeEventListener?.('change', h)
   }, [])
   const effective = s.theme === 'system' ? (systemDark ? 'dark' : 'light') : s.theme
-  const cycle = () => set('theme', effective === 'dark' ? 'light' : s.theme === 'system' ? 'dark' : 'system')
-  const label = `Theme: ${s.theme}. Switch to ${effective === 'dark' ? 'light' : s.theme === 'system' ? 'dark' : 'system'}.`
+  const dark = effective === 'dark'
   return (
-    <button className="theme-toggle" onClick={cycle} aria-label={label} title={label}>
-      <span aria-hidden="true">{effective === 'dark' ? '☀' : '◐'}</span>
-    </button>
+    <label className="uv-switch uv-tip" data-tip={dark ? 'Light mode' : 'Dark mode — double-click for System'}
+      onDoubleClick={() => set('theme', 'system')}>
+      <input
+        type="checkbox"
+        checked={dark}
+        onChange={() => set('theme', dark ? 'light' : 'dark')}
+        aria-label={`Dark mode ${dark ? 'on' : 'off'}. Activate for ${dark ? 'light' : 'dark'}.`}
+      />
+      <span className="uv-track" aria-hidden="true">
+        <span className="uv-sun">☀</span>
+        <span className="uv-moon">☾</span>
+      </span>
+      <span className="uv-thumb" aria-hidden="true">{dark ? '☾' : '☀'}</span>
+    </label>
   )
 }
 
@@ -400,7 +416,7 @@ function Site() {
 
       <main>
         {/* HERO - fits one viewport */}
-        <div className="hero">
+        <div className="hero uv-bg-dots">
           <div className="wrap hero-grid">
             <div>
               <motion.div initial={{ y: 32, opacity: 0, filter: 'blur(10px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 0.9, ease: EASE }}>
@@ -478,6 +494,8 @@ function Site() {
                 <p className="side">Nine things I built that solved real business usecases. Filter by craft.</p>
               </Reveal>
             </div>
+            <Reveal><FeaturedBuild /></Reveal>
+            <div style={{ height: 28 }} />
             <Reveal><Showcase /></Reveal>
           </div>
         </section>)}
@@ -486,7 +504,7 @@ function Site() {
 
         {/* PLAYGROUND */}
         {s.sections.play && (
-        <section id="play" className="play">
+        <section id="play" className="play uv-bg-grid">
           <div className="wrap">
             <div className="shead">
               <Reveal>
@@ -570,7 +588,7 @@ function Site() {
             <Reveal>
               <div className="acc">
                 {JOBS.map((j, i) => (
-                  <div key={j.co} className={`slice ${slice === i ? 'active' : ''}`}
+                  <div key={j.co} className={`slice uv-card-glow ${slice === i ? 'active' : ''}`}
                     onMouseEnter={() => setSlice(i)} onClick={() => setSlice(i)}>
                     <div className="sin">
                       <div className="sbg" style={{ backgroundImage: `url('${j.img}')` }} />
@@ -590,7 +608,7 @@ function Site() {
         </section>)}
 
         {/* CTA */}
-        <section className="cta-sec" id="contact" style={{ paddingTop: 0 }}>
+        <section className="cta-sec uv-bg-mesh" id="contact" style={{ paddingTop: 0 }}>
           <div className="wrap cta-in">
             {s.sections.quotes && (
             <>
@@ -651,7 +669,7 @@ function Site() {
         </footer>
       </main>
 
-      <button className="term-fab" aria-label="Open terminal" onClick={() => setTermOpen(true)}>&gt;_</button>
+      <button className="term-fab uv-tip" data-tip="Terminal — press ` anytime" aria-label="Open terminal" onClick={() => setTermOpen(true)}>&gt;_</button>
       <Terminal open={termOpen} setOpen={setTermOpen} notify={notify} party={party} setParty={setParty} />
       <ResumeModal open={resumeOpen} onClose={() => setResumeOpen(false)} file={resumeUrl} name={s.name} />
       <AdminPanel open={admin} onClose={() => setAdmin(false)} notify={notify} />

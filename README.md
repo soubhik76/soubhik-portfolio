@@ -49,6 +49,7 @@ Tweak copy, links, section visibility, accent theme and defaults from the fronte
 - Filterable showcase: web apps, Python automations, FMCG usecases
 - Colored tech-logo strip (vendored SVGs in `public/icons`: Python, Django, SAP, Fabric, Power BI, T-SQL, Azure, Excel, Teams, SharePoint, Power Apps, Power Automate, Redshift; org logos in `public/logos`)
 - 🎮 Playground: Pipeline Panic game, Deploy Roulette, Data Quiz, Excuse Generator, Gravity Pit (Matter.js physics with draggable logo bodies)
+- ✨ Uiverse-style bits (`src/uiverse.css`, original CSS): glow switch for dark mode, glow buttons, card glow borders, loader, tooltips, dot/grid/mesh backgrounds — plus a pure-CSS browser mockup (`src/components/Mockup.jsx`) featuring a build
 - 📊 Funny widgets: Excel-export incident counter, Time-to-trust meter
 - 🥚 Easter eggs: Konami code party mode, secret terminal (press `` ` ``, try `sudo hire`), console jokes, clickable name
 - Compact approach rows, track record with org logos, rotating quote line, contact CTA
