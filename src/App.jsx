@@ -1,10 +1,13 @@
-import { Component, useCallback, useEffect, useRef, useState } from 'react'
+import { Component, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import { Analytics } from '@vercel/analytics/react'
 import confetti from 'canvas-confetti'
 import Playground from './components/Playground.jsx'
 import { FeaturedBuild } from './components/Mockup.jsx'
 import Terminal, { useKonami } from './components/Terminal.jsx'
+import { BackgroundBeams } from './components/aceternity/background-beams.jsx'
+import { CardBody, CardContainer, CardItem } from './components/aceternity/3d-card.jsx'
+import { GlowingEffect } from './components/aceternity/glowing-effect.jsx'
 import { SettingsProvider, useSettings } from './admin/settings.jsx'
 import AdminPanel from './admin/AdminPanel.jsx'
 import { CATS, HOW, JOBS, PROJECTS, QUOTES, REDIRECTS, STACK } from './data.js'
@@ -30,12 +33,43 @@ const GoArrow = () => (
   </span>
 )
 
-/* ---------- dotted name: Soubhik.Chakraborty ---------- */
-function Dotted({ name }) {
-  const parts = name.split(' ')
-  if (parts.length < 2) return <>{name}</>
+/* ---------- first / last name lockup ---------- */
+function NameLockup({ name, stacked = false }) {
+  const parts = name.trim().split(/\s+/)
+  const first = parts[0] || name
+  const last = parts.slice(1).join(' ')
+  const firstRef = useRef(null)
+  const lastRef = useRef(null)
+
+  useLayoutEffect(() => {
+    if (!stacked) return
+    const fit = () => {
+      const a = firstRef.current
+      const b = lastRef.current
+      if (!a || !b) return
+      a.style.letterSpacing = '0px'
+      a.style.marginRight = '0px'
+      const natural = a.getBoundingClientRect().width
+      const target = b.getBoundingClientRect().width
+      const gaps = Math.max(1, (a.textContent || '').length - 1)
+      const spacing = Math.max(0, (target - natural) / gaps)
+      a.style.letterSpacing = `${spacing}px`
+      a.style.marginRight = `-${spacing}px`
+    }
+    fit()
+    const ready = document.fonts?.ready
+    if (ready) ready.then(fit)
+    const ro = new ResizeObserver(fit)
+    if (lastRef.current) ro.observe(lastRef.current)
+    return () => ro.disconnect()
+  }, [stacked, first, last])
+
+  if (!last) return <span className="name-lockup">{first}</span>
   return (
-    <>{parts[0]}<i className="dot-sep" aria-hidden="true">.</i>{parts.slice(1).join(' ')}</>
+    <span className={`name-lockup${stacked ? ' stacked' : ''}`}>
+      <span ref={firstRef} className="name-first">{first}</span>
+      <span ref={lastRef} className="name-last">{last}</span>
+    </span>
   )
 }
 
@@ -158,7 +192,7 @@ function Showcase() {
             <motion.a key={p.title} layout
               href={p.link || 'https://www.linkedin.com/in/soubhikchakraborty76'}
               target="_blank" rel="noopener noreferrer"
-              aria-label={`${p.title} — opens project page on LinkedIn or GitHub`}
+              aria-label={`${p.title}. Opens the project page on LinkedIn or GitHub`}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -174,7 +208,7 @@ function Showcase() {
         </AnimatePresence>
       </motion.div>
       <p style={{ marginTop: 16, fontSize: 13, color: 'var(--faint)' }}>
-        Every project links out — full write-ups live on{' '}
+        Every project links out. Full write-ups live on{' '}
         <a href="https://www.linkedin.com/in/soubhikchakraborty76" target="_blank" rel="me noopener noreferrer" style={{ color: 'var(--em)' }}>LinkedIn</a>{' '}
         and code on <a href="https://github.com/soubhik76" target="_blank" rel="me noopener noreferrer" style={{ color: 'var(--em)' }}>GitHub</a>.
       </p>
@@ -260,7 +294,7 @@ function ThemeToggle() {
   const effective = s.theme === 'system' ? (systemDark ? 'dark' : 'light') : s.theme
   const dark = effective === 'dark'
   return (
-    <label className="uv-switch uv-tip" data-tip={dark ? 'Light mode' : 'Dark mode — double-click for System'}
+    <label className="uv-switch uv-tip" data-tip={dark ? 'Light mode' : 'Dark mode. Double-click for System'}
       onDoubleClick={() => set('theme', 'system')}>
       <input
         type="checkbox"
@@ -383,7 +417,7 @@ function Site() {
 
       <nav className="nav">
         <button className="mark" onClick={() => { confetti({ particleCount: 60, spread: 70 }); notify('You clicked the name. The name appreciates it.') }}>
-          <Dotted name={s.name} />
+          <NameLockup name={s.name} stacked />
         </button>
         <div className="lk">
           <a href="#work">Work</a>
@@ -417,10 +451,13 @@ function Site() {
       <main>
         {/* HERO - fits one viewport */}
         <div className="hero uv-bg-dots">
+          <div aria-hidden="true">
+            <BackgroundBeams className="hero-beams pointer-events-none" />
+          </div>
           <div className="wrap hero-grid">
             <div>
               <motion.div initial={{ y: 32, opacity: 0, filter: 'blur(10px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }} transition={{ duration: 0.9, ease: EASE }}>
-                <span className="eyebrow"><span className="pulse" /> <Dotted name={s.name} /> · {s.role}</span>
+                <span className="eyebrow"><span className="pulse" /> <NameLockup name={s.name} /> <span className="name-role">{s.role}</span></span>
               </motion.div>
               <motion.h1 className="disp"
                 initial={{ y: 56, opacity: 0, filter: 'blur(14px)' }} animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
@@ -443,15 +480,21 @@ function Site() {
               </motion.div>
             </div>
 
-            <motion.button className="mini-term" onClick={() => setTermOpen(true)}
-              initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.3, ease: EASE }} aria-label="Open terminal">
-              <span className="mt-in" style={{ display: 'block' }}>
-                <span className="mt-bar"><span className="dot" style={{ background: '#e04848' }} /><span className="dot" style={{ background: '#e0a848' }} /><span className="dot" style={{ background: '#4ade80' }} /></span>
-                <pre>{'$ whoami\n'}<span className="w">data engineer. excel-export eradicator.</span>{'\n$ ./rebuild-trust.sh\n'}<span className="g">✓ 21/21 feeds green · finance nodded once</span></pre>
-                <span className="mt-open"><span>live from the warehouse</span><span>open terminal →</span></span>
-              </span>
-            </motion.button>
+            <CardContainer containerClassName="hero-3d" className="hero-3d-tilt">
+              <CardBody className="hero-3d-body">
+                <CardItem translateZ={48} className="w-full">
+                  <motion.button className="mini-term" onClick={() => setTermOpen(true)}
+                    initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, delay: 0.3, ease: EASE }} aria-label="Open terminal">
+                    <span className="mt-in" style={{ display: 'block' }}>
+                      <span className="mt-bar"><span className="dot" style={{ background: '#e04848' }} /><span className="dot" style={{ background: '#e0a848' }} /><span className="dot" style={{ background: '#4ade80' }} /></span>
+                      <pre>{'$ whoami\n'}<span className="w">data engineer. excel-export eradicator.</span>{'\n$ ./rebuild-trust.sh\n'}<span className="g">✓ 21/21 feeds green · finance nodded once</span></pre>
+                      <span className="mt-open"><span>live from the warehouse</span><span>open terminal →</span></span>
+                    </span>
+                  </motion.button>
+                </CardItem>
+              </CardBody>
+            </CardContainer>
           </div>
           <div className="wrap">
             <div className="hero-strip">
@@ -516,7 +559,9 @@ function Site() {
             {s.sections.trust && (
             <div className="trust">
               <Reveal>
-                <div className="shell"><div className="core">
+                <div className="shell acet-glow-host">
+                  <GlowingEffect disabled={false} glow={false} proximity={80} spread={40} movementDuration={1.5} borderWidth={2} />
+                  <div className="core">
                   <h3>Excel-export incidents</h3>
                   <p>Every “just double-check” export gets one click below.</p>
                   <div className="excel-count">{excel}</div>
@@ -527,11 +572,13 @@ function Site() {
                 </div></div>
               </Reveal>
               <Reveal delay={0.08}>
-                <div className="shell"><div className="core">
+                <div className="shell acet-glow-host">
+                  <GlowingEffect disabled={false} glow={false} proximity={80} spread={40} movementDuration={1.5} borderWidth={2} />
+                  <div className="core">
                   <h3>Time-to-trust</h3>
                   <p>How long before someone quotes your number without hedging.</p>
                   <div className="meter"><div style={{ transform: `scaleX(${trust / 100})` }} /></div>
-                  <div style={{ fontFamily: '"Clash Display",sans-serif', fontWeight: 600, fontSize: 28 }}>{trust}% <span style={{ fontSize: 11, color: 'var(--cop-lite)', letterSpacing: '.18em' }}>TRUSTED</span></div>
+                  <div className="trust-num">{trust}% <span>TRUSTED</span></div>
                   <button className="mini-btn" onClick={() => {
                     setTrust((t) => {
                       const n = Math.min(100, t + 4)
@@ -637,7 +684,7 @@ function Site() {
             )}
             <Reveal delay={0.05}>
               <h2 className="disp" style={{ marginTop: 56 }}>The <span className="serif-it">number</span> that's not moving?</h2>
-              <p style={{ marginTop: 16, color: 'var(--dim)', fontSize: 16 }}>Fastest reply on LinkedIn — every click below opens my profile, inbox, or code.</p>
+              <p style={{ marginTop: 16, color: 'var(--dim)', fontSize: 16 }}>Fastest reply on LinkedIn. Every click below opens my profile, inbox, or code.</p>
               <div className="btns">
                 <a href={`mailto:${s.email}`} className="btn btn-p">{s.email} <Arrow /></a>
                 <a href={s.linkedin} target="_blank" rel="me noopener noreferrer" aria-label="Open Soubhik Chakraborty on LinkedIn" className="btn btn-g">LinkedIn <Arrow /></a>
@@ -656,7 +703,7 @@ function Site() {
 
         <footer>
           <div className="wrap f-in">
-            <button className="fm" onClick={footTap} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }} aria-label={s.name}><Dotted name={s.name} /></button>
+            <button className="fm" onClick={footTap} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', padding: 0 }} aria-label={s.name}><NameLockup name={s.name} stacked /></button>
             <div className="fl">
               <a href={`mailto:${s.email}`}>Email</a>
               <a href={s.linkedin} target="_blank" rel="me noopener noreferrer">LinkedIn</a>
@@ -669,7 +716,7 @@ function Site() {
         </footer>
       </main>
 
-      <button className="term-fab uv-tip" data-tip="Terminal — press ` anytime" aria-label="Open terminal" onClick={() => setTermOpen(true)}>&gt;_</button>
+      <button className="term-fab uv-tip" data-tip="Terminal. Press ` anytime" aria-label="Open terminal" onClick={() => setTermOpen(true)}>&gt;_</button>
       <Terminal open={termOpen} setOpen={setTermOpen} notify={notify} party={party} setParty={setParty} />
       <ResumeModal open={resumeOpen} onClose={() => setResumeOpen(false)} file={resumeUrl} name={s.name} />
       <AdminPanel open={admin} onClose={() => setAdmin(false)} notify={notify} />
