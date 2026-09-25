@@ -1,5 +1,5 @@
 /* Featured build inside a pure-CSS browser frame (mockup-generator style).
-   Content comes from src/data.js — no fabricated metrics. */
+   Content comes from src/data.js. No fabricated metrics. */
 import { PROJECTS } from '../data.js'
 
 const DOTS = ['#e04848', '#e0a848', '#4ade80']
